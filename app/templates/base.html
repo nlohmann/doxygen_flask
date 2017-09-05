@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>{{ doxyfile.project_name }} | {{ title }}</title>
+    <link href="{{ url_for('static', filename='bootstrap-4.0.0-beta/css/bootstrap.min.css') }}" rel="stylesheet"/>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="{{ url_for('route_index') }}">{{ doxyfile.project_name }} <small>{{ doxyfile.project_number }}</small></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+            aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{{ url_for('route_index') }}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown01" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">Classes</a>
+                <div class="dropdown-menu" aria-labelledby="dropdown01">
+                    <a class="dropdown-item" href="{{ url_for('route_functions') }}">Class Members</a>
+                    <a class="dropdown-item" href="#">Another action</a>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<ol class="breadcrumb">
+    {% if entry %}
+      <li class="breadcrumb-item"><a href="{{ url_for('route_index') }}">Home</a></li>
+        {% if entry.parent %}
+            <li class="breadcrumb-item"><a href="{{ url_for('route_detail', id=entry.parent.id) }}">{{ entry.parent.name }}</a></li>
+        {% endif %}
+      <li class="breadcrumb-item active">{{ entry.name }}</li>
+    {% else %}
+      <li class="breadcrumb-item active">Home</li>
+    {% endif %}
+</ol>
+
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+        integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+        crossorigin="anonymous"></script>
+<script src="{{ url_for('static', filename='bootstrap-4.0.0-beta/js/bootstrap.min.js') }}"></script>
+<!-- <script src="https://use.fontawesome.com/30117c9681.js"></script> -->
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {{ entry.kind_str }}<br>
+    <h2><small><a href="{{ url_for('route_detail', id=entry.parent.id) }}">{{ entry.parent.name }}</a>::</small><wbr>{{ entry.name }}</h2>
+
+    <hr>
+    <code>{% if entry.type_str %}{{ entry.type_str|safe }} {% endif %}{{ entry.name }}{% if entry.child('argsstring').text %}{{ entry.child('argsstring').text }}{% endif %};</code>
+    <hr>
+
+    {% if entry.sections.brief %}
+        <p class="lead">{{ entry.sections.brief|safe }}</p>
+    {% endif %}
+
+    {% if entry.sections.detailed %}
+        <p>{{ entry.sections.detailed|safe }}</p>
+    {% endif %}
+
+    {% if entry.sections.note %}
+        <h5>Note</h5>
+        <p>
+            {% if entry.sections.note|length > 1 %}
+                <ul>
+                    {% for par in entry.sections.note %}
+                        <li>{{ par|safe }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                {{ entry.sections.note[0]|safe }}
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% if entry.sections.pre %}
+        <div class="alert alert-primary" role="alert">
+            <h5>Precondition</h5>
+            <p>
+                {% if entry.sections.pre|length > 1 %}
+                    <ul>
+                        {% for par in entry.sections.pre %}
+                            <li>{{ par|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {{ entry.sections.pre[0]|safe }}
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+
+    {% if entry.sections.warning %}
+        <div class="alert alert-warning" role="alert">
+            <h5>Warning</h5>
+            <p>
+                {% if entry.sections.warning|length > 1 %}
+                    <ul>
+                        {% for par in entry.sections.warning %}
+                            <li>{{ par|safe }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    {{ entry.sections.warning[0]|safe }}
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+
+    {% if entry.sections.post %}
+        <h5>Postcondition</h5>
+        <p>
+        <ul>
+            {% for par in entry.sections.post %}
+                <li>{{ par|safe }}</li>
+            {% endfor %}
+        </ul>
+        </p>
+    {% endif %}
+
+    {% if entry.sections.templateparam %}
+        <h5>Template parameters</h5>
+        <p>
+            {% for par in entry.sections.templateparam %}
+                {{ par|safe }}
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if entry.sections.param %}
+        <h5>Parameters</h5>
+        <p>
+            {% for par in entry.sections.param %}
+                {{ par|safe }}
+            {% endfor %}
+        </p>
+    {% endif %}
+
+    {% if entry.sections.return %}
+        <h5>Return value</h5>
+        {% for par in entry.sections.return %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections.Example %}
+        <h5>Example</h5>
+        {% for par in entry.sections.Example %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections.Complexity %}
+        <h5>Complexity</h5>
+        {% for par in entry.sections.Complexity %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections['Iterator validity'] %}
+        <h5>Iterator validity</h5>
+        {% for par in entry.sections['Iterator validity'] %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections['Exception safety'] %}
+        <h5>Exception safety</h5>
+        {% for par in entry.sections['Exception safety'] %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections.Requirements %}
+        <h5>Requirements</h5>
+        {% for par in entry.sections.Requirements %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections.exception %}
+        <h5>Exceptions</h5>
+        {% for par in entry.sections.exception %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if entry.sections.see %}
+        <h5>See also</h5>
+        <p>
+        <ul>
+            {% for par in entry.sections.see %}
+                <li>{{ par|safe }}</li>
+            {% endfor %}
+        </ul>
+        </p>
+    {% endif %}
+
+    {% if entry.sections.since %}
+        <h5>Since</h5>
+        {% for par in entry.sections.since %}
+            <p>{{ par }}</p>
+        {% endfor %}
+    {% endif %}
+
+    <h5>Location</h5>
+
+    <p>
+        {% set location = entry.child('location') %}
+        {% set location_file = lookup[files[location.attrib.file]] %}
+        Definition at line {{ location.attrib.line }} of file <a href="{{ url_for('route_detail', id=location_file.id) }}">{{ location_file.name }}</a>.
+    </p>
+
+    <hr>
+
+    <h5>Parameters</h5>
+
+    {% if entry.params %}
+        <ul>
+            {% for param in entry.params %}
+                <li>{{ param.type_str|safe }} {{ param.declname }} {{ param.defval }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>None.</p>
+    {% endif %}
+
+    <h5>Return value</h5>
+
+    <p>{{ entry.type_str|safe }}</p>
+
+    <h5>Full definition</h5>
+
+    <p><code>{{ entry.child('definition').text }}{{ entry.child('argsstring').text }}</code></p>
+
+    <h5>Sections</h5>
+
+    {{ entry.sections }}
+
+    <hr>
+
+    {{ entry.detaileddescription|safe }}
+
+    <code>{{ entry.xml }}</code>
+
+{% endblock %}

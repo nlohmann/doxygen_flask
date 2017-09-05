@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2><small>{{ entry.element.attrib.kind }}</small> {{ entry.name }}</h2>
+
+    <ul>
+        <li>
+            <a href="{{ url_for('route_detail', id=entry.element.attrib.id) }}">{{ entry.name }} ({{ entry.element.attrib.kind }})</a>
+        </li>
+    </ul>
+
+    {% if entry.element.findall('.//memberdef') %}
+        <h3>members</h3>
+        <ul>
+            {% for memberdef in entry.element.findall('.//memberdef') %}
+                <li><a href="{{ url_for('route_detail', id=memberdef.attrib.id) }}">{{ memberdef.find('./name').text }} ({{ memberdef.attrib.kind }})</a> - {{ lookup[memberdef.attrib.id].sections.brief|safe }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
