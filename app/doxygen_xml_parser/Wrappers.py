@@ -59,19 +59,61 @@ class MemberDefWrapper(object):
                 kind=self.element.attrib.get('kind')
             )
 
+    @property
+    def noexcept_str(self):
+        """return the noexcept part of the argstring"""
+        argsstring = self.child('argsstring').text
+        try:
+            splitted = argsstring.split('noexcept')
+            return 'noexcept' + splitted[1]
+        except (AttributeError, IndexError):
+            return ''
+
+    @property
+    def function_signature_str(self):
+        """return the function signature as HTML"""
+        static_str = 'static ' if self.element.attrib.get('static') == 'yes' else ''
+        return_type = self.type_str
+        params_strings = []
+
+        for p in self.params:
+            current = '{type_str} {declname}'.format(type_str=p['type_str'],
+                                                     declname=p['declname'])
+            if p.get('defval'):
+                current += ' = ' + p['defval']
+
+            params_strings.append(current)
+
+        params_str = ', '.join(params_strings)
+        const_str = ' const' if self.element.attrib.get('const') == 'yes' else ''
+        noexcept_str = self.noexcept_str
+        if noexcept_str != '':
+            noexcept_str = ' ' + noexcept_str
+
+        return '{static_str}{return_type} <strong>{name}</strong>({params_str}){const_str}{noexcept_str};'.format(
+            static_str=static_str,
+            return_type=return_type,
+            name=self.name,
+            params_str=params_str,
+            const_str=const_str,
+            noexcept_str=noexcept_str
+        )
+
     def child(self, name):
         return self.element.find('./' + name)  # type: ET.Element
 
     @staticmethod
     def __build_type_str(type_element):
-        ref_element = type_element.find('./ref')
+        ref_element = type_element.find('./ref')  # type: ET.Element
 
         if ref_element is None:
             return type_element.text
         else:
-            return '<a href="{uri}">{text}</a>'.format(
+            return '{before_ref}<a href="{uri}">{text}</a>{after_ref}'.format(
+                before_ref=type_element.text if type_element.text else '',
                 uri=url_for('route_detail', id=ref_element.attrib['refid']),
-                text=ref_element.text
+                text=ref_element.text,
+                after_ref=ref_element.tail if ref_element.tail else ''
             )
 
     @property
@@ -208,7 +250,7 @@ class MemberDefWrapper(object):
                     text_buffer += '<tr>'
                 elif elem.tag == 'entry':
                     if elem.attrib.get('thead') == 'yes':
-                        text_buffer += '<th class="table-secondary">'
+                        text_buffer += '<th class="table-dark">'
                     else:
                         text_buffer += '<td>'
                 # lists
@@ -232,8 +274,9 @@ class MemberDefWrapper(object):
                         name=elem.attrib.get('name')
                     ))
 
-                    text_buffer += '<p><figure class="figure">\n<img src="{url}">\n<figcaption class="figure-caption">'.format(
-                        url=url)
+                    text_buffer += '<p><figure class="figure">\n'
+                    text_buffer += '<img src="{url}">\n'.format(url=url)
+                    text_buffer += '<figcaption class="figure-caption">'
 
                 # add the text
                 if elem.text is not None:

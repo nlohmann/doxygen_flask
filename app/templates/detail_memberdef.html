@@ -2,10 +2,12 @@
 
 {% block content %}
     {{ entry.kind_str }}<br>
-    <h2><small><a href="{{ url_for('route_detail', id=entry.parent.id) }}">{{ entry.parent.name }}</a>::</small><wbr>{{ entry.name }}</h2>
+    <h2>
+        <small><a href="{{ url_for('route_detail', id=entry.parent.id) }}">{{ entry.parent.name }}</a>::</small><wbr>{{ entry.name }}
+    </h2>
 
     <hr>
-    <code>{% if entry.type_str %}{{ entry.type_str|safe }} {% endif %}{{ entry.name }}{% if entry.child('argsstring').text %}{{ entry.child('argsstring').text }}{% endif %};</code>
+    <code>{{ entry.function_signature_str|safe }}</code>
     <hr>
 
     {% if entry.sections.brief %}
@@ -17,67 +19,71 @@
     {% endif %}
 
     {% if entry.sections.note %}
-        <h5>Note</h5>
-        <p>
-            {% if entry.sections.note|length > 1 %}
-                <ul>
-                    {% for par in entry.sections.note %}
-                        <li>{{ par|safe }}</li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                {{ entry.sections.note[0]|safe }}
-            {% endif %}
-        </p>
+        {% if entry.sections.note|length > 1 %}
+            <h5 style="margin-top: 2em;">Notes</h5>
+            <ul>
+                {% for par in entry.sections.note %}
+                    <li>{{ par|safe }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h5 style="margin-top: 2em;">Note</h5>
+            <p>{{ entry.sections.note[0]|safe }}</p>
+        {% endif %}
     {% endif %}
 
     {% if entry.sections.pre %}
-        <div class="alert alert-primary" role="alert">
-            <h5>Precondition</h5>
-            <p>
+        <div class="alert alert-primary" style="margin-top: 2em;" role="alert">
+            {% if entry.sections.pre %}
                 {% if entry.sections.pre|length > 1 %}
+                    <h5>Preconditions</h5>
                     <ul>
                         {% for par in entry.sections.pre %}
                             <li>{{ par|safe }}</li>
                         {% endfor %}
                     </ul>
                 {% else %}
-                    {{ entry.sections.pre[0]|safe }}
+                    <h5>Precondition</h5>
+                    <p>{{ entry.sections.pre[0]|safe }}</p>
                 {% endif %}
-            </p>
+            {% endif %}
         </div>
     {% endif %}
 
     {% if entry.sections.warning %}
-        <div class="alert alert-warning" role="alert">
-            <h5>Warning</h5>
-            <p>
+        <div class="alert alert-warning" style="margin-top: 2em;" role="alert">
+            {% if entry.sections.warning %}
                 {% if entry.sections.warning|length > 1 %}
+                    <h5>Warnings</h5>
                     <ul>
                         {% for par in entry.sections.warning %}
                             <li>{{ par|safe }}</li>
                         {% endfor %}
                     </ul>
                 {% else %}
-                    {{ entry.sections.warning[0]|safe }}
+                    <h5>Warning</h5>
+                    <p>{{ entry.sections.warning[0]|safe }}</p>
                 {% endif %}
-            </p>
+            {% endif %}
         </div>
     {% endif %}
 
     {% if entry.sections.post %}
-        <h5>Postcondition</h5>
-        <p>
-        <ul>
-            {% for par in entry.sections.post %}
-                <li>{{ par|safe }}</li>
-            {% endfor %}
-        </ul>
-        </p>
+        {% if entry.sections.post|length > 1 %}
+            <h5 style="margin-top: 2em;">Postconditions</h5>
+            <ul>
+                {% for par in entry.sections.post %}
+                    <li>{{ par|safe }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <h5 style="margin-top: 2em;">Postcondition</h5>
+            <p>{{ entry.sections.post[0]|safe }}</p>
+        {% endif %}
     {% endif %}
 
     {% if entry.sections.templateparam %}
-        <h5>Template parameters</h5>
+        <h5 style="margin-top: 2em;">Template parameters</h5>
         <p>
             {% for par in entry.sections.templateparam %}
                 {{ par|safe }}
@@ -86,7 +92,7 @@
     {% endif %}
 
     {% if entry.sections.param %}
-        <h5>Parameters</h5>
+        <h5 style="margin-top: 2em;">Parameters</h5>
         <p>
             {% for par in entry.sections.param %}
                 {{ par|safe }}
@@ -95,78 +101,77 @@
     {% endif %}
 
     {% if entry.sections.return %}
-        <h5>Return value</h5>
+        <h5 style="margin-top: 2em;">Return value</h5>
         {% for par in entry.sections.return %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections.Example %}
-        <h5>Example</h5>
+        <h5 style="margin-top: 2em;">Example</h5>
         {% for par in entry.sections.Example %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections.Complexity %}
-        <h5>Complexity</h5>
+        <h5 style="margin-top: 2em;">Complexity</h5>
         {% for par in entry.sections.Complexity %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections['Iterator validity'] %}
-        <h5>Iterator validity</h5>
+        <h5 style="margin-top: 2em;">Iterator validity</h5>
         {% for par in entry.sections['Iterator validity'] %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections['Exception safety'] %}
-        <h5>Exception safety</h5>
+        <h5 style="margin-top: 2em;">Exception safety</h5>
         {% for par in entry.sections['Exception safety'] %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections.Requirements %}
-        <h5>Requirements</h5>
+        <h5 style="margin-top: 2em;">Requirements</h5>
         {% for par in entry.sections.Requirements %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections.exception %}
-        <h5>Exceptions</h5>
+        <h5 style="margin-top: 2em;">Exceptions</h5>
         {% for par in entry.sections.exception %}
             <p>{{ par|safe }}</p>
         {% endfor %}
     {% endif %}
 
     {% if entry.sections.see %}
-        <h5>See also</h5>
-        <p>
+        <h5 style="margin-top: 2em;">See also</h5>
         <ul>
             {% for par in entry.sections.see %}
                 <li>{{ par|safe }}</li>
             {% endfor %}
         </ul>
-        </p>
     {% endif %}
 
     {% if entry.sections.since %}
-        <h5>Since</h5>
+        <h5 style="margin-top: 2em;">Since</h5>
         {% for par in entry.sections.since %}
             <p>{{ par }}</p>
         {% endfor %}
     {% endif %}
 
-    <h5>Location</h5>
+    <h5 style="margin-top: 2em;">Location</h5>
 
+    {% set location = entry.child('location') %}
+    {% set location_file = lookup[files[location.attrib.file]] %}
     <p>
-        {% set location = entry.child('location') %}
-        {% set location_file = lookup[files[location.attrib.file]] %}
-        Definition at line {{ location.attrib.line }} of file <a href="{{ url_for('route_detail', id=location_file.id) }}">{{ location_file.name }}</a>.
+        Definition at line {{ location.attrib.line }} of file
+        <a href="{{ url_for('route_detail', id=location_file.id) }}">{{ location_file.name }}</a>.
     </p>
 
     <hr>
@@ -176,7 +181,7 @@
     {% if entry.params %}
         <ul>
             {% for param in entry.params %}
-                <li>{{ param.type_str|safe }} {{ param.declname }} {{ param.defval }}</li>
+                <li>{{ param.type_str|safe }}<br>{{ param.declname }}<br>{{ param.defval }}</li>
             {% endfor %}
         </ul>
     {% else %}
