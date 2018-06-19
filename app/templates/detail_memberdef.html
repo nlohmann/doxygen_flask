@@ -50,6 +50,15 @@
         </div>
     {% endif %}
 
+    {% if entry.sections.Deprecated %}
+        <div class="alert alert-warning" style="margin-top: 2em;" role="alert">
+        <h5>Deprecated</h5>
+        {% for par in entry.sections.Deprecated %}
+            <p>{{ par|safe }}</p>
+        {% endfor %}
+        </div>
+    {% endif %}
+
     {% if entry.sections.warning %}
         <div class="alert alert-warning" style="margin-top: 2em;" role="alert">
             {% if entry.sections.warning %}

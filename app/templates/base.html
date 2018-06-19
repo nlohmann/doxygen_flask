@@ -6,6 +6,10 @@
 
     <title>{{ doxyfile.project_name }} | {{ title }}</title>
     <link href="{{ url_for('static', filename='bootstrap-4.0.0-beta/css/bootstrap.min.css') }}" rel="stylesheet"/>
+
+    <!-- HighlightJS CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-light.min.css">
+
 </head>
 
 <body>
@@ -62,6 +66,10 @@
         crossorigin="anonymous"></script>
 <script src="{{ url_for('static', filename='bootstrap-4.0.0-beta/js/bootstrap.min.js') }}"></script>
 <!-- <script src="https://use.fontawesome.com/30117c9681.js"></script> -->
+
+<!-- HighlightJS JavaScript -->
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
 
 </body>
 </html>

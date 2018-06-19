@@ -2,6 +2,8 @@
 
 from flask import url_for
 from lxml import etree as ET
+import logging
+import cgi
 
 
 def get_bool(s):
@@ -148,7 +150,7 @@ class MemberDefWrapper(object):
                 if attrs != '':
                     attrs = ' ' + attrs
 
-                print('<{tag}{attrs}>'.format(tag=elem.tag, attrs=attrs))
+                logging.debug('<{tag}{attrs}>'.format(tag=elem.tag, attrs=attrs))
 
                 if elem.tag == 'computeroutput':
                     res += '<code>'
@@ -187,7 +189,7 @@ class MemberDefWrapper(object):
                     res += elem.text
 
             elif event == 'end':
-                print('</{tag}>'.format(tag=elem.tag))
+                logging.debug('</{tag}>'.format(tag=elem.tag))
 
                 if elem.tag == 'computeroutput':
                     res += '</code>'
@@ -219,7 +221,11 @@ class MemberDefWrapper(object):
         for event, elem in ET.iterwalk(el, events=('start', 'end')):
             if event == 'start':
                 # take care of sections
-                if elem.tag in ['simplesect', 'parameterlist']:
+                if elem.tag == 'xreftitle':
+                    current_section = elem.text
+                    text_buffer = ''
+
+                elif elem.tag in ['simplesect', 'parameterlist']:
                     # if we have not seen a section before, this was the detailed section
                     if current_section is None:
                         result['detailed'] = text_buffer
@@ -236,7 +242,8 @@ class MemberDefWrapper(object):
                 elif elem.tag == 'computeroutput':
                     text_buffer += '<code>'
                 elif elem.tag == 'programlisting':
-                    text_buffer += '<p><pre class="bg-light p-3 border rounded"><code>'
+                    # TODO: add filename elem.attrib.get('filename')
+                    text_buffer += '<p><pre class="bg-light p-3 border rounded"><code class="cpp">'
                 elif elem.tag == 'sp':
                     text_buffer += ' '
                 elif elem.tag == 'verbatim':
@@ -289,7 +296,7 @@ class MemberDefWrapper(object):
 
             elif event == 'end':
                 # close section
-                if elem.tag in ['simplesect', 'parameterlist']:
+                if elem.tag in ['simplesect', 'parameterlist', 'xrefsect']:
                     # definition list
                     if elem.tag == 'parameterlist':
                         text_buffer += '</dl>'
@@ -340,7 +347,7 @@ class MemberDefWrapper(object):
 
                 # add tail text
                 if elem.tail is not None:
-                    text_buffer += elem.tail
+                    text_buffer += cgi.escape(elem.tail)
 
         # if we did not find a section so far, this should be the brief description
         if current_section is None:

@@ -26,7 +26,8 @@ class Parser(object):
         for xml_file in xml_files:
             xml_doc = ET.parse(xml_file)
             current_file_compounddefs = [CompoundDefWrapper(element, self.doxyfile)
-                                         for element in xml_doc.findall('./compounddef')]
+                                         for element in xml_doc.findall('./compounddef')
+                                         if element.attrib.get('prot') != 'private']
             self.compounddefs += current_file_compounddefs
             for current_file_compounddef in current_file_compounddefs:
                 self.memberdefs += [MemberDefWrapper(element, current_file_compounddef, self.doxyfile)
